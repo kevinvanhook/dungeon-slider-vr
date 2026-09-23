@@ -1,5 +1,7 @@
 # Dungeon Quest slider test
 
+Version 2 adds independent Width (1, 1.25, 1.6, 2) and Depth (1, 0.75, 0.5) comparison controls. Both default to the original shape. Leave Room scale at 1 to preserve height. Changes apply in first-camera coordinates to the model and camera positions, while camera/headset rotations remain rigid. Spark's covariance mode (extended splats and extended accumulator) transforms Gaussian shapes correctly under nonuniform scaling. These are visual calibration experiments, not a recovered ground-truth geometry correction. Headset performance of covariance mode still needs validation.
+
 Separate WebXR viewer for the 209,649-splat, 60-frame slider reconstruction. Open index.html through HTTPS (GitHub Pages) or a localhost web server; file:// is not supported.
 
 Load room, then Enter VR on Meta Quest Browser. Left thumbstick slides through recorded camera positions. Right thumbstick up/down adjusts vertical position by at most 6 cm at the default approximate scale. A/X resets to the initial viewpoint and re-centers on the current headset position and heading. No automatic motion in VR. Physical head tracking remains active. This is a limited frontal capture, not a reconstructed 360-degree room.

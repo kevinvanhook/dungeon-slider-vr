@@ -33,11 +33,15 @@ function resize(){
 }
 function updateSceneScale(){
  worldScale=.6/span*Number($('scale').value);
- mesh.matrix.copy(new THREE.Matrix4().makeScale(worldScale,worldScale,worldScale).multiply(worldFromModel));
+ const width=Number($('width').value),depth=Number($('depth').value);
+ const shape=new THREE.Matrix4().makeScale(width,1,depth);
+ mesh.matrix.copy(shape.clone().multiply(new THREE.Matrix4().makeScale(worldScale,worldScale,worldScale)).multiply(worldFromModel));
  mesh.matrixWorldNeedsUpdate=true;
  poses=meta.modelPoses.map(m=>new THREE.Matrix4().makeScale(worldScale,worldScale,worldScale).multiply(worldFromModel).multiply(m));
  // Camera orientations must stay unit length after changing scene scale.
  poses=poses.map(m=>{const p=new THREE.Vector3(),q=new THREE.Quaternion(),s=new THREE.Vector3();m.decompose(p,q,s);return new THREE.Matrix4().compose(p,q,new THREE.Vector3(1,1,1));});
+ // Transform camera positions with the room; keep headset and camera rotations rigid.
+ poses.forEach(m=>m.setPosition(position(m).applyMatrix4(shape)));
 }
 function reset(){progress=0;vertical=0;yaw=0;pitch=0;preview=false;$('preview').textContent='Preview path';$('path').value=0;
  if(renderer?.xr.isPresenting)pendingXRReset=true;else{rig.position.set(0,0,0);rig.quaternion.identity();camera.position.set(0,0,0);camera.quaternion.identity();}
@@ -70,9 +74,9 @@ async function load(){
   worldFromModel=meta.modelPoses[0].clone().invert();span=0;
   for(const a of meta.modelPoses)for(const b of meta.modelPoses)span=Math.max(span,position(a).distanceTo(position(b)));
   if(!Number.isFinite(span)||span<=0)throw Error('Invalid camera calibration.');
-  const spark=new SparkRenderer({renderer,enableLod:false,preBlurAmount:.3,blurAmount:0,sortRadial:true});scene.add(spark);
+  const spark=new SparkRenderer({renderer,enableLod:false,covSplats:true,accumExtSplats:true,preBlurAmount:.3,blurAmount:0,sortRadial:true});scene.add(spark);
   const bytes=await fetchModel();$('status').textContent='Preparing 209,649 splats…';
-  mesh=new SplatMesh({fileBytes:bytes,fileName:'slider.ply',enableLod:false});await mesh.initialized;
+  mesh=new SplatMesh({fileBytes:bytes,fileName:'slider.ply',enableLod:false,extSplats:true,covSplats:true});await mesh.initialized;
   mesh.matrixAutoUpdate=false;updateSceneScale();scene.add(mesh);
   ready=true;$('poster').hidden=true;$('load').hidden=true;$('settings').hidden=false;$('reset').disabled=false;
   $('status').textContent=`${mesh.numSplats.toLocaleString()} splats · ready`;
@@ -119,6 +123,7 @@ function animate(time,frame){
 $('load').onclick=load;$('reset').onclick=reset;
 $('path').oninput=e=>{progress=Number(e.target.value);preview=false;$('preview').textContent='Preview path';};
 $('scale').onchange=()=>{if(!ready)return;updateSceneScale();reset();};
+$('width').onchange=$('depth').onchange=()=>{if(!ready)return;updateSceneScale();reset();};
 $('preview').onclick=()=>{preview=!preview;$('preview').textContent=preview?'Pause preview':'Preview path';};
 $('vr').onclick=async()=>{try{const session=await navigator.xr.requestSession('immersive-vr',{optionalFeatures:['local-floor','bounded-floor']});await renderer.xr.setSession(session);}catch(e){reportError(e);}};
 addEventListener('resize',resize);addEventListener('keydown',e=>{if(e.key.toLowerCase()==='r'&&ready)reset();});
