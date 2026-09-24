@@ -32,7 +32,7 @@ function resize(){
  }
 }
 function updateSceneScale(){
- worldScale=.6/span*Number($('scale').value);
+ worldScale=meta.assumedTravelMeters/span*Number($('scale').value);
  const width=Number($('width').value),depth=Number($('depth').value);
  const shape=new THREE.Matrix4().makeScale(width,1,depth);
  mesh.matrix.copy(shape.clone().multiply(new THREE.Matrix4().makeScale(worldScale,worldScale,worldScale)).multiply(worldFromModel));
