@@ -65,7 +65,7 @@ async function load(){
   renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.NoToneMapping;
   $('viewport').append(renderer.domElement);
   renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();reportError(Error('Graphics connection lost. Reload this page to restore the viewer.'));});
-  const res=await fetch('scene.json');if(!res.ok)throw Error('Scene settings could not be loaded.');meta=await res.json();
+  const res=await fetch('scene.json?v=5',{cache:'no-store'});if(!res.ok)throw Error('Scene settings could not be loaded.');meta=await res.json();
   const transform=matrix([...meta.parser.transform,[0,0,0,1]]);
   // The saved parser transform includes the COLMAP-to-Nerfstudio transform,
   // but frames in transforms.json have already received that transform.
