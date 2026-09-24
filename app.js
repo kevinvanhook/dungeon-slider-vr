@@ -75,8 +75,8 @@ async function load(){
   for(const a of meta.modelPoses)for(const b of meta.modelPoses)span=Math.max(span,position(a).distanceTo(position(b)));
   if(!Number.isFinite(span)||span<=0)throw Error('Invalid camera calibration.');
   const spark=new SparkRenderer({renderer,enableLod:false,covSplats:true,accumExtSplats:true,preBlurAmount:.3,blurAmount:0,sortRadial:true});scene.add(spark);
-  const bytes=await fetchModel();$('status').textContent='Preparing 209,649 splats…';
-  mesh=new SplatMesh({fileBytes:bytes,fileName:'slider.ply',enableLod:false,extSplats:true,covSplats:true});await mesh.initialized;
+  const bytes=await fetchModel();$('status').textContent=`Preparing ${meta.splats.toLocaleString()} splats…`;
+  mesh=new SplatMesh({fileBytes:bytes,fileName:'woman-orbit.ply',enableLod:false,extSplats:true,covSplats:true});await mesh.initialized;
   mesh.matrixAutoUpdate=false;updateSceneScale();scene.add(mesh);
   ready=true;$('poster').hidden=true;$('load').hidden=true;$('settings').hidden=false;$('reset').disabled=false;
   $('status').textContent=`${mesh.numSplats.toLocaleString()} splats · ready`;
