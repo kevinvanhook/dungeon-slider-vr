@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stef · Quest Mesh Test</title><link rel="stylesheet" href="stef-test.css">
+<script type="importmap">{"imports":{"three":"./three.module.js","three/addons/":"./addons/"}}</script>
+</head><body>
+<main id="viewport"></main>
+<header><span class="eyebrow">QUEST · MESH PIPELINE TEST</span><h1>Stef</h1><span id="status">Loading 5.4 MB mesh…</span></header>
+<section id="panel">
+ <div class="buttons"><button id="vr" class="primary" disabled>Enter VR</button><button id="reset">Reset</button></div>
+ <div class="row"><label>Height <select id="height"><option value="1.55">1.55 m</option><option value="1.6002" selected>1.60 m · 5′3″</option><option value="1.65">1.65 m</option></select></label><label>Distance <select id="distance"><option value="1.5">1.5 m</option><option value="2" selected>2.0 m</option><option value="2.5">2.5 m</option></select></label></div>
+ <label>Floor correction <input id="floor" type="range" min="-0.5" max="0.5" value="0" step="0.01"><output id="floorValue">0.00 m</output></label>
+ <p>In Quest Browser, load this page and choose Enter VR. The model is placed at a measured 1.6002 m tall. Floor correction moves the model without changing its scale.</p>
+ <p id="error" role="alert" hidden></p>
+</section>
+<script type="module" src="stef-test.js?v=1"></script></body></html>
